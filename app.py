@@ -1,5 +1,62 @@
 import streamlit as st
 
+st.set_page_config(page_title="Análise Aviator – H2Bet", layout="centered")
+st.title("🎯 Analisador de Velas – H2Bet Manual")
+
+st.markdown("Cole abaixo as **últimas 20 velas** que você viu no jogo (ex: 1.2, 2.1, 10.5...)")
+
+entrada = st.text_input("🔢 Digite as 20 velas separadas por vírgula")
+
+if entrada:
+    try:
+        velas = [float(v.strip()) for v in entrada.split(",") if v.strip()]
+        
+        if len(velas) != 20:
+            st.warning("⚠️ Você precisa inserir **exatamente 20 valores**.")
+        else:
+            maiores_10 = [v for v in velas if v >= 10]
+            menores_2 = [v for v in velas if v < 2]
+            ultimas_5 = velas[-5:]
+            ultima_10x = max((i for i, v in enumerate(reversed(velas)) if v >= 10), default=None)
+
+            # Métricas
+            st.subheader("📊 Estatísticas")
+            st.metric("Velas ≥ 10x", len(maiores_10))
+            st.metric("Porcentagem ≥ 10x", f"{(len(maiores_10)/20)*100:.2f}%")
+            st.metric("Velas < 2x", len(menores_2))
+
+            if ultima_10x is not None:
+                st.info(f"🕒 Já se passaram **{ultima_10x} velas** desde a última ≥ 10x")
+            else:
+                st.error("🚨 Nenhuma vela ≥ 10x nas últimas 20!")
+
+            # Tendência simples
+            st.subheader("📈 Análise de Tendência")
+
+            if len(maiores_10) == 0:
+                st.warning("🧊 Sessão FRIA: nenhuma vela ≥ 10x.")
+            elif ultima_10x >= 10:
+                st.success("🔥 Sessão pode estar esquentando.")
+            else:
+                st.info("📉 Sessão aparentemente neutra.")
+
+            st.line_chart(velas)
+
+            st.subheader("📋 Últimas 5 velas:")
+            for i, v in enumerate(reversed(ultimas_5), 1):
+                if v >= 10:
+                    st.success(f"#{i} → 🔥 {v}x")
+                elif v < 2:
+                    st.error(f"#{i} → ⚠️ {v}x")
+                else:
+                    st.write(f"#{i} → {v}x")
+
+    except Exception as e:
+        st.error(f"❌ Erro: verifique se todos os valores são válidos. ({str(e)})")
+else:
+    st.info("Insira os dados para começar a análise.")
+ streamlit as st
+
 
 st.set_page_config(page_title="Aviator - Velas", layout="centered")
 st.title("🎰 Monitor Manual de Velas – H2Bet")
