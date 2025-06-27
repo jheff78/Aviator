@@ -1,0 +1,49 @@
+import streamlit as st
+import requests
+import pandas as pd
+import time
+
+st.set_page_config(page_title="Aviator - Analisador de Velas", layout="centered")
+st.title("📊 Aviator - Analisador de Velas")
+
+API_URL = "https://aviator-api-xxxxx.onrender.com/velas"  # troque para seu endpoint real
+
+def fetch_data():
+    try:
+        response = requests.get(API_URL, timeout=5)
+        data = response.json()
+        return pd.DataFrame(data)
+    except Exception as e:
+        st.error(f"Erro ao buscar dados da API: {e}")
+        return None
+
+df = fetch_data()
+
+if df is not None:
+    try:
+        df['value'] = pd.to_numeric(df['value'])
+        st.bar_chart(df.set_index("id")["value"])
+
+        # Probabilidade média
+        media = df["value"].mean()
+        st.info(f"🎯 Média das últimas velas: **{media:.2f}x**")
+
+        # Alerta 10x+
+        ult_vela = df.iloc[-1]
+        if ult_vela["value"] >= 10:
+            st.success(f"🚨 Vela 10x+ detectada! ID: {ult_vela['id']} - Valor: {ult_vela['value']}x")
+
+        # Alerta 1000x
+        if ult_vela["value"] >= 1000:
+            st.balloons()
+            st.success(f"🔥🔥🔥 VELA 1000x! ID: {ult_vela['id']} - {ult_vela['value']}x")
+
+        # Padrões de vela rasa (<2x)
+        rasas = df[df["value"] < 2]
+        pct_rasas = len(rasas) / len(df)
+        if pct_rasas >= 0.85:
+            st.warning("📈 Padrão de velas rasas detectado! Alta chance de vir 10x+ 🔥")
+    except:
+        st.error("Erro: formato dos dados inválido.")
+else:
+    st.error("Erro ao carregar os dados.")
