@@ -1,4 +1,4 @@
- import streamlit as st
+streamlit as st
 import requests
 
 # 🌐 Buscar velas da API externa
