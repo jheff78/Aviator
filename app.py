@@ -1,4 +1,27 @@
-import streamlit as st
+imfrom fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+# 🔓 Permitir acesso de qualquer origem (útil para o Streamlit)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ⚠️ Em produção, ideal permitir só seu domínio Streamlit
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# 📊 Mock de 20 velas
+@app.get("/velas")
+def get_velas():
+    return [
+        "1.00x", "1.55x", "2.20x", "0.95x", "1.01x",
+        "1.25x", "10.30x", "5.50x", "3.40x", "1.10x",
+        "0.95x", "2.00x", "1.90x", "0.80x", "12.00x",
+        "1.75x", "1.05x", "7.00x", "2.50x", "0.90x"
+    ]
+port streamlit as st
 
 st.set_page_config(page_title="Analisador Aviator", layout="centered")
 st.title("🎯 Analisador de Velas – H2Bet Manual")
