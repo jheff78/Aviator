@@ -1,4 +1,31 @@
-import import streamlit as st
+import streamlit as st
+import random
+
+st.set_page_config(page_title="Simulador Aviator", layout="centered")
+st.title("🛩️ Simulador de Velas – Aviator")
+
+# Entrada manual das velas
+entrada = st.text_input("🔢 Cole as últimas 10 velas separadas por vírgula (ex: 1.2, 2.1, 10.5, 3.4...)")
+
+if entrada:
+    try:
+        velas = [float(v.strip()) for v in entrada.split(",") if v.strip()]
+        
+        if len(velas) < 2:
+            st.warning("⚠️ Insira pelo menos 2 valores.")
+        else:
+            st.line_chart(velas)
+
+            if any(v >= 10 for v in velas):
+                st.success("🚨 Alerta: vela maior ou igual a 10x detectada!")
+            else:
+                st.info("✅ Nenhuma vela >= 10x.")
+    except ValueError:
+        st.error("Erro: Insira apenas números separados por vírgula.")
+else:
+    st.info("Digite os valores para visualizar o gráfico.")
+
+ import streamlit as st
 import streamlit.components.v1 as components
 import random
 import time
