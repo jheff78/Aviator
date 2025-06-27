@@ -1,4 +1,46 @@
-import streamlit as st
+import import streamlit as st
+
+st.set_page_config(page_title="Aviator - Velas", layout="centered")
+st.title("🎰 Monitor Manual de Velas – H2Bet")
+
+st.markdown("Cole abaixo as **últimas 10 jogadas/velas** que você viu no site da H2Bet.")
+
+# Campo de entrada
+entrada = st.text_input("🔢 Exemplo: 1.2, 2.1, 10.5, 3.4, 12.3, 1.1, 1.9, 3.8, 8.4, 11.2")
+
+# Quando o usuário digitar
+if entrada:
+    try:
+        # Processar a entrada
+        velas = [float(v.strip()) for v in entrada.split(",") if v.strip()]
+
+        # Verifica se tem pelo menos 2 velas para exibir gráfico
+        if len(velas) < 2:
+            st.warning("⚠️ Insira pelo menos 2 valores numéricos separados por vírgula.")
+        else:
+            st.subheader("📊 Gráfico das últimas velas")
+            st.line_chart(velas)
+
+            st.subheader("📋 Detalhes:")
+            acima_10 = [v for v in velas if v >= 10.0]
+            for v in velas:
+                if v >= 10.0:
+                    st.success(f"🔥 Vela Alta: {v}x")
+                elif v < 2.0:
+                    st.error(f"🔻 Vela Baixa: {v}x")
+                else:
+                    st.write(f"{v}x")
+
+            st.markdown("---")
+            st.metric("Total analisado", len(velas))
+            st.metric("Velas ≥ 10x", len(acima_10))
+            st.metric("Porcentagem ≥ 10x", f"{(len(acima_10)/len(velas))*100:.2f}%")
+
+    except ValueError:
+        st.error("❌ Erro: Certifique-se de digitar apenas números separados por vírgula, como no exemplo acima.")
+else:
+    st.info("⌨️ Digite os valores das velas para começar.")
+ as st
 
 st.set_page_config(page_title="Aviator - Velas", layout="centered")
 st.title("🎰 Monitor Manual de Velas – H2Bet")
