@@ -1,4 +1,5 @@
-import import streamlit as st
+import streamlit as st
+
 
 st.set_page_config(page_title="Aviator - Velas", layout="centered")
 st.title("🎰 Monitor Manual de Velas – H2Bet")
