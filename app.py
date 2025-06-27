@@ -1,4 +1,4 @@
-imfrom fastapi import FastAPI
+ imfrom import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
